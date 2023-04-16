@@ -3,7 +3,7 @@ using System.Text;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-var factory = new ConnectionFactory { HostName = "192.168.30.171" };
+var factory = new ConnectionFactory { HostName = "192.168.30.171", UserName = "consumer", Password = "123456" };
 
 using var connection = factory.CreateConnection();
 
@@ -22,4 +22,5 @@ consumer.Received += (model, ea) =>
 
 channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
+Console.WriteLine(" Press [enter] to exit.");
 Console.ReadKey();
