@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -23,10 +24,16 @@ consumer.Received += (model, ea) =>
 {
     var body = ea.Body.ToArray();
     var message = Encoding.UTF8.GetString(body);
-    Console.WriteLine($"Message Received: '{message}' on queue '{queueName}'");
+    Console.WriteLine($" [x] Received {message}");
+
+    int dots = message.Split('.').Length - 1;
+    Thread.Sleep(dots * 1000);
+        Console.WriteLine(" [x] Done");
+
+    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
 };
 
-channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+channel.BasicConsume(queue: queueName, autoAck: false, consumer: consumer);
 
 Console.WriteLine(" Press [enter] to exit.");
 Console.ReadKey();

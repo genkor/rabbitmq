@@ -17,7 +17,8 @@ channel.QueueDeclare(queue: queueName,
                      autoDelete: false, 
                      arguments: null);
 
-var message = $"Sending a Message at {DateTime.Now.ToLocalTime()}.";
+//var message = $"Sending a Message at {DateTime.Now.ToLocalTime()}.";
+var message = GetMessage(args);
 var encodedMessage = Encoding.UTF8.GetBytes(message);
 
 channel.BasicPublish("", queueName, null, encodedMessage);
@@ -26,3 +27,8 @@ Console.WriteLine($"Published message: '{message}' on queue '{queueName}'");
 
 Console.WriteLine(" Press [enter] to exit.");
 Console.ReadKey();
+
+static string GetMessage(string[] args)
+{
+    return ((args.Length > 0) ? string.Join(" ", args) : "Hello World!");
+}
