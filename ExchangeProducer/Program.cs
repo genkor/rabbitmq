@@ -8,21 +8,16 @@ using var connection = factory.CreateConnection();
 
 using var channel = connection.CreateModel();
 
-var queueName = "letter-box";
 var exchangeName = "letter-exchange";
 
-channel.QueueDeclare(queue: queueName,
-                     durable: false,
-                     exclusive: false,
-                     autoDelete: false,
-                     arguments: null);
+channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Fanout);
 
-var message = $"Sending a Message at {DateTime.Now.ToLocalTime()}.";
+var message = $"Brodcastings a Message at {DateTime.Now.ToLocalTime()}.";
 var encodedMessage = Encoding.UTF8.GetBytes(message);
 
-channel.BasicPublish("", queueName, null, encodedMessage);
+channel.BasicPublish(exchange: exchangeName, "", null, encodedMessage);
 
-Console.WriteLine($"Published message: '{message}' on queue '{queueName}'");
+Console.WriteLine($"Published message: '{message}' on exchange '{exchangeName}'");
 
 Console.WriteLine(" Press [enter] to exit.");
 Console.ReadKey();
